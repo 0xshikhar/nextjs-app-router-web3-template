@@ -1,5 +1,4 @@
 "use client"
-// import Wallet from "../wallet/wallet";
 import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/navigation";
@@ -8,6 +7,8 @@ import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 
 const style = {
 	wrapper: `bg-black w-screen px-[1.2rem] py-[0.8rem] flex `,
@@ -90,7 +91,7 @@ export default function Navbar() {
 					<MdOutlineAccountBalanceWallet />
 				</div>
 				<div>
-					{/* <Wallet /> */}
+					<ConnectButton></ConnectButton>
 				</div>
 			</div>
 		</div>
