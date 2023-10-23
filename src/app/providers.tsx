@@ -32,7 +32,7 @@ const { chains, provider } = configureChains(
         arbitrum,
         ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
     ],
-    [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
+    [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || "" }), publicProvider()]
 );
 
 const projectId = 'YOUR_PROJECT_ID';
