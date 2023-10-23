@@ -14,6 +14,7 @@ import {
 // import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { configureChains, createClient, useAccount, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import 'dotenv/config'
 
 import {
     mainnet,
@@ -35,7 +36,7 @@ const { chains, provider } = configureChains(
     [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || "" }), publicProvider()]
 );
 
-const projectId = 'YOUR_PROJECT_ID';
+const projectId ='9811958bd307518b364ff7178034c435';
 
 const { wallets } = getDefaultWallets({
     appName: 'RainbowKit demo',
@@ -75,6 +76,7 @@ const wagmiClient = createClient({
 export { WagmiConfig, RainbowKitProvider };
 
 export function Providers({ children }: { children: React.ReactNode }) {
+    console.log("wallet", process.env.WALLET_CONNECT_PROJECT_ID)
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => setMounted(true), []);
     return (
