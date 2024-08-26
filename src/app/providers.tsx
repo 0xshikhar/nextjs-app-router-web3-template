@@ -1,19 +1,24 @@
 'use client';
 
 import * as React from 'react';
+import '@rainbow-me/rainbowkit/styles.css';
+
 import {
+    getDefaultConfig,
     RainbowKitProvider,
-    getDefaultWallets,
     connectorsForWallets,
+    getDefaultWallets,
 } from '@rainbow-me/rainbowkit';
 import {
     argentWallet,
     trustWallet,
     ledgerWallet,
 } from '@rainbow-me/rainbowkit/wallets';
-// import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { configureChains, createClient, useAccount, WagmiConfig } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { WagmiProvider } from 'wagmi';
+import {
+    QueryClientProvider,
+    QueryClient,
+} from "@tanstack/react-query";
 import 'dotenv/config'
 
 import {
@@ -21,69 +26,54 @@ import {
     polygon,
     optimism,
     arbitrum,
-    goerli,
 } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+// import { publicProvider } from 'wagmi/providers/public';
+// import { alchemyProvider } from "wagmi/providers/alchemy";
 
-const { chains, provider } = configureChains(
-    [
-        mainnet,
-        polygon,
-        optimism,
-        arbitrum,
-        ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
-    ],
-    [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || "" }), publicProvider()]
-);
 
-const projectId ='9811958bd307518b364ff7178034c435';
+const config = getDefaultConfig({
+    appName: 'My RainbowKit App',
+    projectId: 'YOUR_PROJECT_ID',
+    chains: [mainnet, polygon, optimism, arbitrum],
+    ssr: true, // If your dApp uses server side rendering (SSR)
+});
 
+const projectId = '9811958bd307518b364ff7178034c435';
+
+
+// const connectors = connectorsForWallets([
+//     ...wallets,
+//     {
+//         groupName: 'Other',
+//         wallets: [
+//             argentWallet({ projectId, chains }),
+//             trustWallet({ projectId, chains }),
+//             ledgerWallet({ projectId, chains }),
+//         ],
+//     },
+// ]);
 const { wallets } = getDefaultWallets({
     appName: 'RainbowKit demo',
     projectId,
-    chains,
 });
 
 const demoAppInfo = {
-    appName: 'Rainbowkit Demo',
+    appName: 'My Wallet Demo',
 };
 
-const connectors = connectorsForWallets([
-    ...wallets,
-    {
-        groupName: 'Other',
-        wallets: [
-            argentWallet({ projectId, chains }),
-            trustWallet({ projectId, chains }),
-            ledgerWallet({ projectId, chains }),
-        ],
-    },
-]);
-
-// const wagmiConfig = createConfig({
-//     autoConnect: true,
-//     connectors,
-//     publicClient,
-//     webSocketPublicClient,
-// });
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider,
-});
-
-export { WagmiConfig, RainbowKitProvider };
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
     console.log("wallet", process.env.WALLET_CONNECT_PROJECT_ID)
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => setMounted(true), []);
     return (
-        <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-                {mounted && children}
-            </RainbowKitProvider>
-        </WagmiConfig>
+        <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+                <RainbowKitProvider appInfo={demoAppInfo}>
+                    {mounted && children}
+                </RainbowKitProvider>
+            </QueryClientProvider>
+        </WagmiProvider>
     );
 }

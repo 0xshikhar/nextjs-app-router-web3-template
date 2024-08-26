@@ -91,7 +91,7 @@ export default function Navbar() {
 					<MdOutlineAccountBalanceWallet />
 				</div>
 				<div>
-					<ConnectButton></ConnectButton>
+					<ConnectButton />
 				</div>
 			</div>
 		</div>
